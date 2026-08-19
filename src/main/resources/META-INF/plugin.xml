@@ -1,0 +1,34 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>dev.gaphunter.dockerfilelayersizecompanion</id>
+    <name>Dockerfile Layer Size Companion</name>
+    <vendor>Gap Hunter Labs</vendor>
+    <description><![CDATA[
+        <p>Shows the real, on-disk size of each <code>COPY</code>/<code>ADD</code>
+        layer in an open Dockerfile, inline -- computed by summing the
+        actual file sizes of what gets copied from your local build
+        context, respecting <code>.dockerignore</code>. No Docker
+        daemon, no build, no network call: 100% static analysis of the
+        project already open in the IDE.</p>
+        <p>For <code>RUN</code> instructions, there is no way to know the
+        real size a command will add to a layer without actually running
+        it -- so this plugin never invents a number for <code>RUN</code>.
+        Instead it flags well-documented, known-expensive patterns
+        (<code>apt-get install</code> without <code>--no-install-recommends</code>,
+        <code>apt-get update</code> without cleaning the package cache in
+        the same instruction, <code>pip install</code> without
+        <code>--no-cache-dir</code>, several separate <code>RUN</code>
+        instructions that could be combined) with an honest
+        "known-expensive pattern" label, never a fabricated size.</p>
+        <p>Multi-stage <code>COPY --from=&lt;stage&gt;</code> is recognized
+        and labeled "not calculable without running the build" rather
+        than silently guessing or crashing.</p>
+        <p>Free. 100% local -- no network call, no account, no telemetry.</p>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <highlightingPassFactory implementation="dev.gaphunter.dockerfilelayersizecompanion.highlight.LayerSizePassFactory"/>
+    </extensions>
+</idea-plugin>
