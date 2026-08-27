@@ -18,7 +18,7 @@ import java.io.File
  * source, expensive RUN pattern, malformed line) is unit-testable
  * directly against real `java.io.File`s in a temp directory -- same
  * off-EDT/on-EDT split contract as every other highlighting pass in
- * this catalog (`CONSTITUTION.md` SS6: heavy computation off the EDT).
+ * this catalog: heavy computation off the EDT.
  */
 object LayerSizeAnalyzer {
 

@@ -10,7 +10,7 @@ IDE.
 ## Why it exists
 
 An original idea, not a port of an existing competitor — validated
-against `CONSTITUTION.md` §1's "Plan B permanente" discipline before
+against this catalog's own idea-validation discipline before
 being built: (1) confirmed no plugin in this catalog or in JetBrains
 Marketplace does exactly this (`"docker layer size"` → 0 results on
 Marketplace); (2) confirmed buildable in the ~10-day budget with
@@ -188,7 +188,7 @@ v0.1.
   whatever its `FileType` is.
 - **Hand-rolled Dockerfile parser (`DockerfileParser`)**, same
   "hand-roll over new dependency, small stable surface" pattern
-  already proven in this catalog (`CONSTITUTION.md` §6) —
+  already proven in this catalog —
   `NginxLexer` for nginx config, `XlsxReader` for XLSX, now this for
   Dockerfile's own small, well-documented instruction grammar.
 - **`.dockerignore` matching is its own small hand-rolled module**
@@ -199,8 +199,8 @@ v0.1.
   gitignore-style matching library for a narrow, well-bounded need.
 - **Heavy computation off the EDT.** Walking the real filesystem to
   sum directory sizes runs inside `doCollectInformation` (off the
-  EDT), same as every other highlighting pass in this catalog
-  (`CONSTITUTION.md` §6) — only `doApplyInformationToEditor` (on the
+  EDT), same as every other highlighting pass in this catalog —
+  only `doApplyInformationToEditor` (on the
   EDT) touches the `Editor`/`InlayModel`.
 - **No Docker plugin dependency, Java or Kotlin plugin dependency —
   `com.intellij.modules.platform` only.** Because this plugin reads

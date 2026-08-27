@@ -31,9 +31,9 @@ data class CopyArgs(
 
 /**
  * Minimal line-by-line Dockerfile scanner -- same "hand-rolled lexer for
- * a small, stable, line-oriented syntax" pattern as `NginxLexer`
- * (`CONSTITUTION.md` SS6), simpler here because a Dockerfile is a much
- * smaller grammar than nginx config: one instruction keyword per
+ * a small, stable, line-oriented syntax" pattern as `NginxLexer`,
+ * simpler here because a Dockerfile is a much smaller grammar than
+ * nginx config: one instruction keyword per
  * (possibly `\`-continued) statement, no nesting, no braces. No
  * Grammar-Kit, no bundled Docker plugin dependency.
  */
