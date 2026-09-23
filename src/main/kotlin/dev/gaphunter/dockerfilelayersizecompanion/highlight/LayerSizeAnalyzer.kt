@@ -71,7 +71,8 @@ object LayerSizeAnalyzer {
                 " ~${LayerSizeCalculator.formatBytes(result.bytes)}$suffix"
             }
             LayerSizeResult.FromBuildStage -> " copies from a previous build stage -- not calculable without running the build"
-            LayerSizeResult.UnresolvedWildcard -> " wildcard source -- not calculable in v0.1"
+            LayerSizeResult.FromUrl -> " downloads from a URL -- not calculable without fetching it"
+            LayerSizeResult.UnresolvedWildcard -> " wildcard source -- not calculable"
             LayerSizeResult.SourceNotFound -> " source not found in build context"
             LayerSizeResult.Unparseable -> " unparseable"
         }

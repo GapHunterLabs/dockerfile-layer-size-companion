@@ -20,6 +20,13 @@ para empaquetar aplicaciones).
   el plugin no puede saber el tamaño exacto sin ejecutar el comando
   de verdad (y prefiere avisar honestamente en vez de inventar un
   número).
+- En la línea `ADD https://...` — **nuevo en 0.2.0** — un aviso de "no
+  se puede calcular" porque descarga de la red, NO el aviso de
+  "archivo no encontrado" (serían cosas distintas).
+- En la línea siguiente (`RUN apt-get install -y --no-install-recommends
+  curl && rm -rf ...`) — **nuevo en 0.2.0** — NO debería aparecer
+  ningún aviso: esa línea solo instala la herramienta `curl`, nunca la
+  ejecuta para descargar algo.
 - En la línea que dice `COPY --from=builder`: un aviso de "no se
   puede calcular" — tampoco un número inventado.
 

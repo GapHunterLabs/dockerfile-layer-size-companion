@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import dev.gaphunter.dockerfilelayersizecompanion.render.LayerSizeInlayEntry
 import dev.gaphunter.dockerfilelayersizecompanion.render.LayerSizeInlayManager
+import dev.gaphunter.dockerfilelayersizecompanion.review.ReviewPrompt
 import java.io.File
 
 /**
@@ -20,7 +21,7 @@ import java.io.File
  * and is the only place that touches [Editor]/`InlayModel`.
  */
 class LayerSizeHighlightingPass(
-    project: Project,
+    private val project: Project,
     private val editor: Editor,
     private val file: PsiFile,
 ) : TextEditorHighlightingPass(project, editor.document, false) {
@@ -44,5 +45,12 @@ class LayerSizeHighlightingPass(
 
     override fun doApplyInformationToEditor() {
         LayerSizeInlayManager.replaceInlays(editor, entries)
+
+        val virtualFile = file.virtualFile ?: return
+        for (entry in entries) {
+            if (entry.isWarning) {
+                ReviewPrompt.recordHit(project, "${virtualFile.path}:${entry.offset}")
+            }
+        }
     }
 }

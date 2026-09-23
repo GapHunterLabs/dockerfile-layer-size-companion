@@ -20,9 +20,10 @@
         <code>--no-cache-dir</code>, several separate <code>RUN</code>
         instructions that could be combined) with an honest
         "known-expensive pattern" label, never a fabricated size.</p>
-        <p>Multi-stage <code>COPY --from=&lt;stage&gt;</code> is recognized
-        and labeled "not calculable without running the build" rather
-        than silently guessing or crashing.</p>
+        <p>Multi-stage <code>COPY --from=&lt;stage&gt;</code> and
+        <code>ADD &lt;url&gt;</code> (a network download, not a local
+        file) are both recognized and labeled honestly as not
+        calculable, rather than silently guessing or crashing.</p>
         <p>Free. 100% local -- no network call, no account, no telemetry.</p>
     ]]></description>
 
@@ -30,5 +31,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <highlightingPassFactory implementation="dev.gaphunter.dockerfilelayersizecompanion.highlight.LayerSizePassFactory"/>
+        <notificationGroup id="Dockerfile Layer Size Companion" displayType="BALLOON"/>
     </extensions>
 </idea-plugin>

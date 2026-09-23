@@ -17,6 +17,9 @@ sealed class LayerSizeResult {
     /** `COPY --from=<stage>` copies from a previous build stage's filesystem, not the local build context -- genuinely not computable without running the build. */
     object FromBuildStage : LayerSizeResult()
 
+    /** `ADD <url> <dest>` -- real Docker feature, downloads over the network at build time. Not a local file, so genuinely not computable, same honesty class as [FromBuildStage] -- never reported as [SourceNotFound]. */
+    object FromUrl : LayerSizeResult()
+
     /** A source path uses wildcard/glob syntax (`*.jar`) this v0.1 scanner doesn't expand -- documented limitation, not a silent wrong answer. */
     object UnresolvedWildcard : LayerSizeResult()
 
@@ -41,6 +44,7 @@ object LayerSizeCalculator {
     fun compute(copyArgs: CopyArgs, buildContextDir: File, dockerignore: DockerignoreMatcher): LayerSizeResult {
         if (copyArgs.fromStage != null) return LayerSizeResult.FromBuildStage
         if (copyArgs.sources.isEmpty()) return LayerSizeResult.Unparseable
+        if (copyArgs.sources.any { isUrl(it) }) return LayerSizeResult.FromUrl
         if (copyArgs.sources.any { it.contains('*') || it.contains('?') }) return LayerSizeResult.UnresolvedWildcard
 
         var total = 0L
@@ -102,6 +106,10 @@ object LayerSizeCalculator {
         }
         return total to anyIgnored
     }
+
+    /** `ADD` (never plain `COPY`, which has no network-source form) accepts an `http://`/`https://` source -- a real Docker feature, not a local path. */
+    private fun isUrl(source: String): Boolean =
+        source.startsWith("http://", ignoreCase = true) || source.startsWith("https://", ignoreCase = true)
 
     /** Human-readable size, same binary-unit convention Docker/most IDEs use (1024-based, not 1000-based). */
     fun formatBytes(bytes: Long): String {
