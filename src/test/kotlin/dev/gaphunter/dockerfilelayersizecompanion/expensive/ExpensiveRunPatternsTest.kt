@@ -74,6 +74,30 @@ class ExpensiveRunPatternsTest {
     }
 
     @Test
+    fun `does not flag installing the curl or wget package itself as an undownloaded-cleanup download`() {
+        // Installing the curl/wget TOOL (so it's available for something
+        // else, e.g. a HEALTHCHECK) never downloads anything during the
+        // build -- must not be confused with actually invoking curl/wget
+        // to fetch a file. No "&& rm" anywhere, so this doesn't rely on
+        // an unrelated cleanup clause accidentally masking the bug.
+        val aptReasons = ExpensiveRunPatterns.check(
+            runInstruction("apt-get update && apt-get install -y --no-install-recommends curl && update-ca-certificates"),
+        )
+        assertTrue(aptReasons.none { it.contains("cleanup") })
+
+        val apkReasons = ExpensiveRunPatterns.check(runInstruction("apk add --no-cache wget ca-certificates"))
+        assertTrue(apkReasons.none { it.contains("cleanup") })
+    }
+
+    @Test
+    fun `still flags a real curl invocation even in a RUN that also installs curl as a package`() {
+        val reasons = ExpensiveRunPatterns.check(
+            runInstruction("apt-get install -y curl && curl -O https://example.com/x.tar.gz"),
+        )
+        assertTrue(reasons.any { it.contains("cleanup") })
+    }
+
+    @Test
     fun `clean multi-step RUN produces no reasons`() {
         val reasons = ExpensiveRunPatterns.check(
             runInstruction(

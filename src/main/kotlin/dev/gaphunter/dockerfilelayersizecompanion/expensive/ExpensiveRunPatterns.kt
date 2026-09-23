@@ -71,7 +71,7 @@ object ExpensiveRunPatterns {
             )
         }
 
-        if (("curl" in lower || "wget" in lower) && !mentionsCleanupOfDownload(lower)) {
+        if (mentionsCurlOrWgetInvocation(lower) && !mentionsCleanupOfDownload(lower)) {
             reasons.add(
                 "downloads a file via curl/wget with no visible cleanup (rm) of the downloaded " +
                     "archive/installer in the same RUN -- the raw download stays in this layer " +
@@ -112,6 +112,23 @@ object ExpensiveRunPatterns {
 
     private fun mentionsPipInstall(lower: String): Boolean =
         Regex("""pip3?\s+install""").containsMatchIn(lower)
+
+    private val PACKAGE_INSTALL_CLAUSE = Regex("""\b(apt-get|apt|apk|yum|dnf)\s+(install|add)\b""")
+    private val CURL_OR_WGET_WORD = Regex("""\b(curl|wget)\b""")
+
+    /**
+     * `curl`/`wget` appearing anywhere in the command isn't enough --
+     * `apt-get install -y curl` (or `apk add wget`) installs the TOOL,
+     * it never downloads anything during the build. Only a mention
+     * outside a package-manager install clause counts as a real
+     * invocation. Splits on shell chaining (`&&`, `;`, `|`) so a RUN
+     * that both installs curl AND separately invokes it is still
+     * flagged for the invocation half.
+     */
+    private fun mentionsCurlOrWgetInvocation(lower: String): Boolean =
+        lower.split('&', ';', '|').any { clause ->
+            CURL_OR_WGET_WORD.containsMatchIn(clause) && !PACKAGE_INSTALL_CLAUSE.containsMatchIn(clause)
+        }
 
     private fun mentionsCleanupOfDownload(lower: String): Boolean =
         lower.contains("&& rm ") || lower.contains("&&rm ") || lower.trimEnd().endsWith("&& rm")

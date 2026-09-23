@@ -84,6 +84,18 @@ class LayerSizeCalculatorTest {
     }
 
     @Test
+    fun `ADD from a URL is reported as not calculable, not as a missing local file`() {
+        // ADD (unlike COPY) can download a source over the network --
+        // real Docker feature. That's not a file missing on disk, it's
+        // genuinely not sizable without fetching it, same honesty class
+        // as --from=<stage>, so it must not be reported as SourceNotFound.
+        val copyArgs = DockerfileParser.parseCopyArgs("https://example.com/installer.tar.gz /tmp/")!!
+        val result = LayerSizeCalculator.compute(copyArgs, tempFolder.root, DockerignoreMatcher.EMPTY)
+
+        assertEquals(LayerSizeResult.FromUrl, result)
+    }
+
+    @Test
     fun `formatBytes uses binary units`() {
         assertEquals("500 B", LayerSizeCalculator.formatBytes(500))
         assertEquals("1.0 KB", LayerSizeCalculator.formatBytes(1024))

@@ -29,4 +29,17 @@ class DockerfileDetectorTest {
         assertFalse(DockerfileDetector.isDockerfile("README.md"))
         assertFalse(DockerfileDetector.isDockerfile("Makefile"))
     }
+
+    @Test
+    fun `does not treat a markdown cheatsheet named Dockerfile-dot-md as a real Dockerfile`() {
+        // A "dockerfile.md" cheatsheet is documentation, not a real
+        // build file -- and unlike a plain warning, this plugin does
+        // real filesystem I/O (stats files a COPY/ADD line references
+        // relative to wherever that file sits), so misdetecting it
+        // means resolving and sizing paths against a random directory
+        // that has nothing to do with a real build context.
+        assertFalse(DockerfileDetector.isDockerfile("Dockerfile.md"))
+        assertFalse(DockerfileDetector.isDockerfile("dockerfile.md"))
+        assertFalse(DockerfileDetector.isDockerfile("Dockerfile.markdown"))
+    }
 }
