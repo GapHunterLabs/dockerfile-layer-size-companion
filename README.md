@@ -7,6 +7,12 @@ context, respecting `.dockerignore`. No Docker daemon, no build, no
 network call: 100% static analysis of the project already open in the
 IDE.
 
+![Dockerfile Layer Size Companion: See what each COPY adds to your image, measured from your build context](docs/media/hero.gif)
+
+Each feature on its own:
+[Size of every COPY](docs/media/01-layer-sizes.gif) ·
+[Respects .dockerignore](docs/media/02-dockerignore.gif)
+
 ## Why it exists
 
 An original idea, not a port of an existing competitor — validated
