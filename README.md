@@ -15,19 +15,7 @@ Each feature on its own:
 
 ## Why it exists
 
-An original idea, not a port of an existing competitor — validated
-against this catalog's own idea-validation discipline before
-being built: (1) confirmed no plugin in this catalog or in JetBrains
-Marketplace does exactly this (`"docker layer size"` → 0 results on
-Marketplace); (2) confirmed buildable in the ~10-day budget with
-techniques this catalog already has proven — a hand-rolled line-based
-Dockerfile scanner (same pattern as `NginxLexer`) and the inlay
-rendering mechanism already shipped twice this session (HTTP Status
-Code Inline Companion, Regex Named Group Companion). Same "apuesta
-consciente sin ancla de mercado" treatment as Refactor Simulator / Test
-Scaffold Companion: v0.1 ships free, no time/marketing investment
-disproportionate to real demand signal until there's evidence of
-adoption.
+An original idea, not a port of an existing competitor. Before building it I confirmed that no plugin in JetBrains Marketplace does exactly this (`"docker layer size"` returns 0 results). It combines a line-based Dockerfile scanner (the same approach as `NginxLexer`) with the inlay rendering already used by HTTP Status Code Inline Companion and Regex Named Group Companion. It is free.
 
 ## What a number means (and when there isn't one)
 
